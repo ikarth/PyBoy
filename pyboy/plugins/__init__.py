@@ -8,17 +8,17 @@ Plugins that extend PyBoy's functionality. The only publicly exposed, are the ga
 
 __pdoc__ = {
     # docs exclude
-    "rewind": False,
+    "disable_input": False,
     "screen_recorder": False,
-    "manager_gen": False,
-    "window_dummy": False,
+    "debug": False,
+    "rewind": False,
+    "record_replay": False,
+    "window_headless": False,
     "window_sdl2": False,
     "manager": False,
-    "window_open_gl": False,
-    "disable_input": False,
+    "manager_gen": False,
+    "window_dummy": False,
     "auto_pause": False,
-    "record_replay": False,
-    "debug": False,
-    "window_headless": False,
+    "window_open_gl": False,
     # docs exclude end
 }

@@ -16,6 +16,7 @@ from pyboy.plugins.rewind import Rewind # isort:skip
 from pyboy.plugins.screen_recorder import ScreenRecorder # isort:skip
 from pyboy.plugins.game_wrapper_super_mario_land import GameWrapperSuperMarioLand # isort:skip
 from pyboy.plugins.game_wrapper_tetris import GameWrapperTetris # isort:skip
+from pyboy.plugins.game_wrapper_generic import GameWrapperGeneric # isort:skip
 # imports end
 
 
@@ -33,6 +34,7 @@ def parser_arguments():
     yield ScreenRecorder.argv
     yield GameWrapperSuperMarioLand.argv
     yield GameWrapperTetris.argv
+    yield GameWrapperGeneric.argv
     # yield_plugins end
     pass
 
@@ -66,14 +68,15 @@ class PluginManager:
         self.game_wrapper_super_mario_land_enabled = self.game_wrapper_super_mario_land.enabled()
         self.game_wrapper_tetris = GameWrapperTetris(pyboy, mb, pyboy_argv)
         self.game_wrapper_tetris_enabled = self.game_wrapper_tetris.enabled()
+        self.game_wrapper_generic = GameWrapperGeneric(pyboy, mb, pyboy_argv)
+        self.game_wrapper_generic_enabled = self.game_wrapper_generic.enabled()
         # plugins_enabled end
 
     def gamewrapper(self):
         # gamewrapper
-        if self.game_wrapper_super_mario_land_enabled:
-            return self.game_wrapper_super_mario_land
-        if self.game_wrapper_tetris_enabled:
-            return self.game_wrapper_tetris
+        if self.game_wrapper_super_mario_land_enabled: return self.game_wrapper_super_mario_land
+        if self.game_wrapper_tetris_enabled: return self.game_wrapper_tetris
+        if self.game_wrapper_generic_enabled: return self.game_wrapper_generic
         # gamewrapper end
         return None
 
@@ -105,6 +108,8 @@ class PluginManager:
             events = self.game_wrapper_super_mario_land.handle_events(events)
         if self.game_wrapper_tetris_enabled:
             events = self.game_wrapper_tetris.handle_events(events)
+        if self.game_wrapper_generic_enabled:
+            events = self.game_wrapper_generic.handle_events(events)
         # foreach end
         return events
 
@@ -124,6 +129,8 @@ class PluginManager:
             self.game_wrapper_super_mario_land.post_tick()
         if self.game_wrapper_tetris_enabled:
             self.game_wrapper_tetris.post_tick()
+        if self.game_wrapper_generic_enabled:
+            self.game_wrapper_generic.post_tick()
         # foreach end
 
         self._post_tick_windows()
@@ -165,24 +172,19 @@ class PluginManager:
         # foreach windows done = [].frame_limiter(speed), if done: return
         if self.window_sdl2_enabled:
             done = self.window_sdl2.frame_limiter(speed)
-            if done:
-                return
+            if done: return
         if self.window_open_gl_enabled:
             done = self.window_open_gl.frame_limiter(speed)
-            if done:
-                return
+            if done: return
         if self.window_headless_enabled:
             done = self.window_headless.frame_limiter(speed)
-            if done:
-                return
+            if done: return
         if self.window_dummy_enabled:
             done = self.window_dummy.frame_limiter(speed)
-            if done:
-                return
+            if done: return
         if self.debug_enabled:
             done = self.debug.frame_limiter(speed)
-            if done:
-                return
+            if done: return
         # foreach end
 
     def window_title(self):
@@ -214,6 +216,8 @@ class PluginManager:
             title = self.game_wrapper_super_mario_land.window_title()
         if self.game_wrapper_tetris_enabled:
             title = self.game_wrapper_tetris.window_title()
+        if self.game_wrapper_generic_enabled:
+            title = self.game_wrapper_generic.window_title()
         # foreach end
         return title
 
@@ -245,5 +249,7 @@ class PluginManager:
             self.game_wrapper_super_mario_land.stop()
         if self.game_wrapper_tetris_enabled:
             self.game_wrapper_tetris.stop()
+        if self.game_wrapper_generic_enabled:
+            self.game_wrapper_generic.stop()
         # foreach end
         pass
